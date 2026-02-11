@@ -1,8 +1,0 @@
-README.md
-pyproject.toml
-src/cayleypy_pancake/__init__.py
-src/cayleypy_pancake/paths.py
-src/cayleypy_pancake.egg-info/PKG-INFO
-src/cayleypy_pancake.egg-info/SOURCES.txt
-src/cayleypy_pancake.egg-info/dependency_links.txt
-src/cayleypy_pancake.egg-info/top_level.txt
