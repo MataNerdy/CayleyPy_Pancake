@@ -1,18 +1,24 @@
+# Python
+__pycache__/
+*.pyc
 
-# macOS
+# Jupyter
+.ipynb_checkpoints/
+
+# Local stuff
 .DS_Store
 
-# Python build artifacts
-__pycache__/
-*.py[cod]
-*.egg-info/
-build/
-dist/
+# Envs
+.venv/
+.venv312/
+.env
 
-# venv
-.venv*/
-
-# python artifacts
-*.egg-info/
-__pycache__/
-*.py[cod]
+# Big / generated
+runs/
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.npz
+*.npy
+*.csv
