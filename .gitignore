@@ -27,3 +27,4 @@ ml_sweep/
 leader_tune/
 data/
 *.json
+*.pyo
