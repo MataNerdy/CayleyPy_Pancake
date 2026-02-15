@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List, Dict, Any, Callable
+from typing import List, Dict, Any, Optional, Callable, Iterable
 import time
 import pandas as pd
 
@@ -12,7 +12,8 @@ from cayleypy_pancake.search import (
     apply_moves,
     log_print,
 )
-from cayleypy_pancake.utils.solution_format import moves_to_str
+from cayleypy_pancake.utils.solution_format import moves_to_str, moves_len
+from cayleypy_pancake.utils.progress import save_progress_map
 
 
 def full_eval_top_cfgs(
@@ -161,16 +162,6 @@ def full_eval_top_cfgs(
         )
 
     return pd.read_csv(out_csv_path)
-from __future__ import annotations
-
-from pathlib import Path
-from typing import Dict, Optional, Callable
-import time
-import pandas as pd
-
-from cayleypy_pancake.baseline import parse_permutation, pancake_sort_moves
-from cayleypy_pancake.utils.solution_format import moves_len
-
 
 def evaluate_submission_vs_baseline(
     test_df: pd.DataFrame,
@@ -261,3 +252,41 @@ def evaluate_submission_vs_baseline(
         "mean_submission_len": sum_sub / max(1, N),
         "improved_frac": improved / max(1, N),
     }
+
+
+def build_baseline_progress_map(
+    test_df: pd.DataFrame,
+    *,
+    baseline_moves_fn: Callable[[Iterable[int]], list[int]] = pancake_sort_moves,
+    log_every: int = 2000,
+) -> Dict[int, str]:
+    t0 = time.time()
+    baseline_map: Dict[int, str] = {}
+
+    N = len(test_df)
+    for i in range(N):
+        pid = int(test_df.loc[i, "id"])
+        perm = parse_permutation(test_df.loc[i, "permutation"])
+        moves = baseline_moves_fn(perm)
+        baseline_map[pid] = moves_to_str(moves)
+
+        if log_every and ((i + 1) % log_every == 0 or (i + 1) == N):
+            print(f"  baseline [{i+1}/{N}] dt={time.time()-t0:.1f}s", flush=True)
+
+    return baseline_map
+
+
+def build_and_save_baseline_submission(
+    test_df: pd.DataFrame,
+    *,
+    out_path: Path,
+    baseline_moves_fn: Callable[[Iterable[int]], list[int]] = pancake_sort_moves,
+    log_every: int = 2000,
+) -> pd.DataFrame:
+    baseline_map = build_baseline_progress_map(
+        test_df,
+        baseline_moves_fn=baseline_moves_fn,
+        log_every=log_every,
+    )
+    save_progress_map(baseline_map, out_path)
+    return pd.DataFrame(list(baseline_map.items()), columns=["id", "solution"]).sort_values("id")

@@ -1,5 +1,4 @@
-import os
+from pathlib import Path
 
-def ensure_dir(path: str):
-    if path and not os.path.exists(path):
-        os.makedirs(path, exist_ok=True)
+def ensure_dir(path: Path) -> None:
+    path.mkdir(parents=True, exist_ok=True)

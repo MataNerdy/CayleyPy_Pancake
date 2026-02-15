@@ -22,3 +22,8 @@ runs/
 *.npz
 *.npy
 *.csv
+
+ml_sweep/
+leader_tune/
+data/
+*.json
