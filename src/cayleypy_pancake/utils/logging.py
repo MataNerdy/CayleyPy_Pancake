@@ -1,3 +1,4 @@
-def log_print(enabled: bool, msg: str) -> None:
-    if enabled:
-        print(msg, flush=True)
+import time
+
+def now_str() -> str:
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
