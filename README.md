@@ -58,7 +58,7 @@
 
 Сравнение с baseline
 
-![Baseline vs Solution](baseline_vs_improved.png)
+![Baseline vs Solution](images/baseline_vs_improved.png)
 
 * Beam search стабильно улучшает baseline
 * Увеличение `beam_width` даёт diminishing returns
@@ -120,8 +120,6 @@ h(s) ≈ distance_to_goal
 ---
 
 # Масштабируемость
-
-Масштабируемость
 
 ![Gain vs n](images/gain_vs_n.png)
 
