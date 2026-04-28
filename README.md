@@ -1,13 +1,210 @@
-# CayleyPy Pancake
+# Pancake Sorting: эвристический поиск и ML-эвристики
 
-Modular ML framework for learning heuristics in the Pancake Sorting problem
-via Cayley graph exploration and beam search.
+Проект посвящён задаче **pancake sorting** - сортировке перестановки с помощью префиксных разворотов (операции вида `R_k`) в рамках соревнования на Kaggle.
 
-This repository refactors a research-heavy notebook into a structured
-Python package with:
+Мы исследуем, как улучшить классический алгоритм с помощью:
 
-- classical baseline heuristics
-- beam search with handcrafted heuristics
-- ML-based heuristic learning (PyTorch)
-- resumeable training & submission generation
-- submission merging utilities
+* эвристического поиска (beam search)
+* ручных эвристик (gap, breakpoints)
+* обучаемых ML-эвристик
+
+---
+
+# Постановка задачи
+
+Дана перестановка чисел от `0` до `n-1`.
+Разрешённая операция — переворот первых `k` элементов:
+
+```
+[3, 1, 2, 0] → R3 → [2, 1, 3, 0]
+```
+
+Цель:
+
+> найти последовательность таких операций минимальной длины, приводящую к отсортированному виду.
+
+---
+
+# Основные результаты
+
+### Качество решений
+
+* Улучшение baseline: **99.83% случаев**
+* Общее число шагов:
+
+  * baseline: **158 680**
+  * итог: **91 594**
+* Суммарный выигрыш: **67 086 шагов**
+* Средний выигрыш: **~27.9 шагов**
+* Максимальный выигрыш: **92 шага**
+
+Улучшение растёт с увеличением размера перестановки
+
+---
+
+### Эффективность
+
+* Beam search стабильно улучшает baseline
+* Увеличение beam width даёт diminishing returns
+* Оптимальный компромисс:
+
+  ```
+  beam_width = 128
+  depth = 128
+  ```
+
+---
+
+# Подход
+
+## 1. Baseline
+
+Классический жадный алгоритм pancake sorting:
+
+* сложность: `O(n^2)`
+* гарантирует корректное решение
+
+---
+
+## 2. Эвристический поиск
+
+Используется **beam search** с оценкой:
+
+```
+f(s) = g(s) + w · h(s)
+```
+
+где:
+
+* `g(s)` — длина пути
+* `h(s)` — эвристика
+
+### Эвристики:
+
+* **gap heuristic**
+* **breakpoints**
+* **mix (gap + α·breakpoints)**
+
+---
+
+## 3. ML-эвристика
+
+Обучается модель, предсказывающая расстояние до решения:
+
+* Embedding представление перестановки
+* MLP / Residual архитектуры
+* обучение на random walk по графу Кэли
+
+Используется как функция:
+
+```
+h(s) ≈ distance_to_goal
+```
+
+---
+
+# Ключевые выводы
+
+* breakpoints немного лучше gap
+* beam search даёт стабильный прирост
+* увеличение depth почти не влияет
+* embedding лучше one-hot
+* выигрыш растёт с размером задачи
+
+---
+
+# 📁 Структура проекта
+
+```
+├── data/                  # входные данные
+├── notebooks/             # исследования и эксперименты
+├── runs/                  # результаты (submission)
+├── src/cayleypy_pancake/
+│   ├── baseline.py        # базовый алгоритм
+│   ├── search.py          # beam search
+│   ├── models.py          # ML модели
+│   ├── eval.py            # метрики
+│   ├── ml/                # ML pipeline
+│   └── utils/             # утилиты
+```
+
+---
+
+# Использование
+
+## 🔹 Запуск baseline
+
+```python
+from cayleypy_pancake.baseline import pancake_sort_moves
+
+perm = [3,1,2,0]
+moves = pancake_sort_moves(perm)
+print(moves)
+```
+
+---
+
+## Эвристический поиск
+
+```python
+from cayleypy_pancake.search import beam_improve_or_baseline_h
+```
+
+---
+
+## ML-эвристика
+
+```python
+from cayleypy_pancake.ml.pipeline import train_model
+```
+
+---
+
+# Ноутбук
+
+Основное исследование:
+
+```
+notebooks/pancake_91584_final_edit.ipynb
+```
+
+Включает:
+
+* анализ данных
+* эвристики
+* beam search
+* ML обучение
+* финальные результаты
+
+---
+
+# Пример результата
+
+Для одной перестановки:
+
+```
+baseline: 150 шагов
+solution: 65 шагов
+gain: 85
+```
+
+---
+
+# Данные
+
+* `data/test.csv` — тестовые перестановки
+* `runs/submission_*.csv` — решения
+
+---
+
+# Итог
+
+Проект показывает, что:
+
+> комбинация эвристического поиска и ML позволяет улучшить решения задачи pancake sorting, особенно на больших размерах.
+
+---
+
+Проект выполнен в рамках Deep Learning School (DLS)
+
+---
