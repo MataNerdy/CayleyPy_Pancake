@@ -56,6 +56,10 @@
 
 ### Эффективность
 
+Сравнение с baseline
+
+![Baseline vs Solution](baseline_vs_improved.png)
+
 * Beam search стабильно улучшает baseline
 * Увеличение `beam_width` даёт diminishing returns
 * Практически оптимальный компромисс:
