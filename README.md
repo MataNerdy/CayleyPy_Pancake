@@ -200,6 +200,22 @@ pip install git+https://github.com/cayleypy/cayleypy.git
 
 # Использование
 
+# Быстрый старт
+
+Самый простой способ попробовать проект:
+
+```bash
+python demo.py
+```
+
+## Интерактивный интерфейс
+
+Можно запустить интерактивный интерфейс:
+
+```bash
+streamlit run app.py
+```
+
 ## Baseline
 
 ```python
