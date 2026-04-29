@@ -208,6 +208,20 @@ pip install git+https://github.com/cayleypy/cayleypy.git
 python demo.py
 ```
 
+🥞 Pancake Sorting Demo
+--------------------------------------------------
+Start permutation: [9, 1, 7, 11, 4, 3, 0, 8, 5, 2, 10, 6]
+
+Baseline
+  length: 20
+  solved: True
+
+Beam search improvement
+  length: 12
+  solved: True
+
+Gain: 8
+
 ## Интерактивный интерфейс
 
 Можно запустить интерактивный интерфейс:
